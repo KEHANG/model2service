@@ -1,4 +1,5 @@
 
+from m2s.common.utils import sanitize
 
 class Predictor(object):
     """
@@ -21,4 +22,4 @@ class Predictor(object):
 
     def predict_instance(self, instance):
         outputs = self._model.forward_on_instance(instance)
-        return outputs
+        return sanitize(outputs)
