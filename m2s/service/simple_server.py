@@ -5,12 +5,14 @@ from logging.handlers import RotatingFileHandler
 from flask import Flask, jsonify, request, Response
 
 def create_app(title,
-               predictor):
+               predictor,
+               config=None):
     """
     Creates a Flask app that serves up the provided ``Predictor``
     """
 
     app = Flask(__name__)
+    app.config.from_object(config)
 
     if not app.debug and not app.testing:
 
