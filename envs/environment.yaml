@@ -1,0 +1,13 @@
+name: m2s
+channels:
+  - defaults
+  - conda-forge
+  - pytorch
+dependencies:
+  - python=3
+  - nose
+  - numpy
+  - pillow
+  - pytorch::pytorch
+  - pytorch::torchvision
+  - overrides
