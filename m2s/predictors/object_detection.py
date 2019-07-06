@@ -4,7 +4,7 @@ import torchvision.transforms as T
 
 from m2s.predictors.predictor import Predictor
 
-class ProductDetectionPredictor(Predictor):
+class ObjectDetectionPredictor(Predictor):
     """
     Predictor for object detection in images.
     """
