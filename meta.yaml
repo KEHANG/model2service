@@ -1,0 +1,38 @@
+# For conda build
+package:
+  name: m2s
+  version: {{ environ.get('GIT_DESCRIBE_TAG', '') }}
+
+source:
+  path: .
+
+build:
+  number: {{ environ.get('GIT_DESCRIBE_NUMBER', 0) }}
+  noarch: generic
+
+requirements:
+  build:
+    - python=3
+
+  run:
+    - python=3
+    - nose
+    - numpy
+    - pillow
+    - pytorch::pytorch
+    - pytorch::torchvision
+    - overrides
+    - flask
+
+test:
+  source_files:
+    - '*'
+  requires:
+    - nose
+  imports:
+    - m2s
+
+about:
+  home: https://github.com/KEHANG/model2service
+  license: MIT
+  summary: "A humble tool that bridges data science models and services"
