@@ -11,3 +11,4 @@ dependencies:
   - pytorch::pytorch
   - pytorch::torchvision
   - overrides
+  - flask
