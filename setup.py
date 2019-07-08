@@ -7,7 +7,7 @@ for root, dirs, files in os.walk('m2s'):
         if file.endswith('.py'):
             if 'test' not in file and '__init__' not in file:
                 module = 'm2s' + root.partition('m2s')[-1].replace('/','.') + '.' + file.partition('.py')[0]
-                modules.append(module) 
+                modules.append(module)
 
 setup(
     name='Model2Service',

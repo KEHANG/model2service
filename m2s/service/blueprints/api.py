@@ -1,7 +1,7 @@
 import os
 import json
 from werkzeug.utils import secure_filename
-from flask import abort, current_app, request, jsonify, Blueprint
+from flask import current_app, request, jsonify, Blueprint
 
 bp = Blueprint('api', __name__)
 
