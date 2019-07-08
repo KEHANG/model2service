@@ -1,3 +1,6 @@
 
 # ignored file types
 *.pyc
+.coverage
+
+testing/coverage/*

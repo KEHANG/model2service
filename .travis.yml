@@ -19,6 +19,10 @@ install:
   - conda env create -f envs/environment.yaml
   - source activate m2s
   - conda list
+  - pip install codecov
 
 script: 
   - make unittests
+
+after_success:
+  - codecov
