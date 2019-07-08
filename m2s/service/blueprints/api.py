@@ -20,7 +20,7 @@ def predict():
 @bp.route('/upload_file', methods=['POST'])
 def upload_file():
     file = request.files.get('file')
-    if file and allowed_file(file.filename, 
+    if file and allowed_file(file.filename,
                     current_app.config['ALLOWED_EXTENSIONS']):
         filename = secure_filename(file.filename)
         file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
