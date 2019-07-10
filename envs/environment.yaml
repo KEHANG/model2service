@@ -13,3 +13,4 @@ dependencies:
   - overrides
   - flask
   - coverage
+  - pyyaml
