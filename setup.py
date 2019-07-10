@@ -9,9 +9,11 @@ for root, dirs, files in os.walk('m2s'):
                 module = 'm2s' + root.partition('m2s')[-1].replace('/','.') + '.' + file.partition('.py')[0]
                 modules.append(module)
 
+exec(open('m2s/version.py').read())
+
 setup(
     name='Model2Service',
-    version='1.0.0',
+    version=m2s_version,
     packages=['m2s'],
     description='A humble tool that bridges data science models and services.',
     author='Kehang Han',
