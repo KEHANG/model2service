@@ -1,5 +1,5 @@
 import os
-from distutils.core import setup
+from setuptools import setup
 
 modules = []
 for root, dirs, files in os.walk('m2s'):
