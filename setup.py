@@ -18,5 +18,6 @@ setup(
     description='A humble tool that bridges data science models and services.',
     author='Kehang Han',
     author_email='kehanghan@gmail.com',
-    py_modules=modules
+    py_modules=modules,
+    entry_points={'console_scripts': ['m2s=m2s.commands.main:main']}
 )
