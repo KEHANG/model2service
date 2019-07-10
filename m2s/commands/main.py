@@ -1,6 +1,7 @@
 import sys
 
 from m2s.commands import help
+from m2s.commands import docker
 from m2s.commands import version
 from m2s.commands.base import BaseCommand
 
