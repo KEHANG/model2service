@@ -50,6 +50,7 @@ class BaseCommand(object):
         self.description = ""
 
     def help(self):
+        """Prints help information for this command"""
         self.parser.print_help()
 
     def add_arg(self, argument, type="str", default=None, help=None):
