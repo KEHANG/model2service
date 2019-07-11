@@ -1,4 +1,4 @@
-
+import six
 import torch
 import numpy
 
@@ -7,8 +7,10 @@ def sanitize(x):
     Sanitize turns PyTorch and Numpy types into basic Python types so they
     can be serialized into JSON.
     """
-    if isinstance(x, (str, float, int, bool)):
+    if six.PY3 and isinstance(x, (str, float, int, bool)):
         # x is already serializable
+        return x
+    elif six.PY2 and isinstance(x, (str, unicode, float, int, bool)):
         return x
     elif isinstance(x, torch.Tensor):
         # tensor needs to be converted to a list (and moved to cpu if necessary)
@@ -30,6 +32,6 @@ def sanitize(x):
     elif hasattr(x, 'to_json'):
         return x.to_json()
     else:
-        raise ValueError(f"Cannot sanitize {x} of type {type(x)}. "
-                         "If this is your own custom class, add a `to_json(self)` method "
+        raise ValueError("Cannot sanitize {0} of {1}.".format(x, type(x)) + 
+                         "If this is your own custom class, add a `to_json(self)` method " + 
                          "that returns a JSON-like object.")
