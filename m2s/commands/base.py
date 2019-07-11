@@ -18,6 +18,13 @@ def print_arguments(args):
     print("------------------------------------------------")
 
 class BaseCommand(object):
+    """
+    Base class for m2s commands
+
+    Arguments:
+        name (str): name of the command, also serving as 
+        a key in command_dict (dict)
+    """
     command_dict = {}
 
     @classmethod
