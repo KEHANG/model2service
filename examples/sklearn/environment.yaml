@@ -1,0 +1,8 @@
+name: linear
+channels:
+  - defaults
+  - kehang
+dependencies:
+  - python=3
+  - scikit-learn
+  - m2s

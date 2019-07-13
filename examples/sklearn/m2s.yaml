@@ -1,0 +1,14 @@
+project_name: my-linear-model
+conda_env_name: linear
+conda_env_file: environment.yaml
+
+modules:
+  - model.py
+
+data: []
+
+pretrained:
+  - my_model.pkl
+
+service_startup_file: run_app.py
+service_app_name: service_app
