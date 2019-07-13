@@ -24,6 +24,7 @@ requirements:
     - overrides
     - flask
     - pyyaml
+    - gunicorn
 
 test:
   source_files:
