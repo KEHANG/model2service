@@ -26,8 +26,7 @@ class DockerCommand(BaseCommand):
         yaml_path = argv[0]
         docker = Docker.from_yaml(yaml_path)
 
-        output_path = os.path.join(os.path.dirname(yaml_path), 
-        						   'Dockerfile')
+        output_path = os.path.dirname(yaml_path)
         docker.to_dockerfile(output_path)
 
 command = DockerCommand.instance()

@@ -1,3 +1,4 @@
+import os
 import yaml
 
 class Docker(object):
@@ -7,6 +8,7 @@ class Docker(object):
     def __init__(self,
                  project_name,
                  # environment related
+                 conda_env_name,
                  conda_env_file,
                  # installation related
                  modules,
@@ -18,6 +20,7 @@ class Docker(object):
         """
         Arguments:
             project_name (str): name of the user application project
+            conda_env_name (str): the name of conda environment
             conda_env_file (str): path to the environment yaml file of the project
             modules (list[str]): code modules for the project model
             data (list[str]): data folders needed for the project model to make prediction
@@ -26,6 +29,7 @@ class Docker(object):
             service_app_name (str): the variable name of the service app in the startup file
         """
         self.project_name = project_name
+        self.conda_env_name = conda_env_name
         self.conda_env_file = conda_env_file
         self.modules = modules
         self.data = data
@@ -48,6 +52,7 @@ class Docker(object):
                 print(exc)
 
         project_name = yaml_data['project_name']
+        conda_env_name = yaml_data['conda_env_name']
         conda_env_file = yaml_data['conda_env_file']
         modules = yaml_data['modules']
         data = yaml_data['data']
@@ -56,6 +61,7 @@ class Docker(object):
         service_app_name = yaml_data['service_app_name']
 
         return cls(project_name,
+                   conda_env_name,
                    conda_env_file,
                    modules,
                    data,
@@ -63,13 +69,13 @@ class Docker(object):
                    service_startup_file,
                    service_app_name)
 
-    def to_dockerfile(self, dockerfile_path):
+    def to_dockerfile(self, output_path):
         """
         This method generates Dockerfile based on the attributes
         of ``Docker`` instance.
 
         Arguments:
-            dockerfile_path (str): output path to the generated Dockerfile
+            output_path (str): directory for the output Dockerfile
         """
         modules_str = ""
         for m in self.modules:
@@ -122,5 +128,15 @@ USER m2s_user
 EXPOSE 8000
 ENTRYPOINT ["./launch_dk.sh"]
 """
+
+        launch_file_str = f"""#!/bin/bash
+source activate {self.conda_env_name}
+exec gunicorn -b :8000 --timeout 600 --access-logfile access.log --error-logfile error.log {self.service_startup_file[:-3]}:{self.service_app_name}
+"""     
+        dockerfile_path = os.path.join(output_path, 'Dockerfile')
+        launch_file_path = os.path.join(output_path, 'launch_dk.sh')
         with open(dockerfile_path, 'w') as dockerfile:
             dockerfile.write(dockerfile_str)
+
+        with open(launch_file_path, 'w') as launch_file:
+            launch_file.write(launch_file_str)
