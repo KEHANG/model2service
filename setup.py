@@ -1,5 +1,5 @@
 import os
-from setuptools import setup
+from setuptools import find_packages, setup
 
 modules = []
 for root, dirs, files in os.walk('m2s'):
@@ -14,10 +14,9 @@ exec(open('m2s/version.py').read())
 setup(
     name='Model2Service',
     version=m2s_version,
-    packages=['m2s'],
+    packages=find_packages(exclude=["tests"]),
     description='A humble tool that bridges data science models and services.',
     author='Kehang Han',
     author_email='kehanghan@gmail.com',
-    py_modules=modules,
     entry_points={'console_scripts': ['m2s=m2s.commands.main:main']}
 )
