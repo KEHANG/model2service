@@ -19,8 +19,8 @@ requirements:
     - nose
     - numpy
     - pillow
-    - pytorch::pytorch
-    - pytorch::torchvision
+    - pytorch
+    - torchvision
     - overrides
     - flask
     - pyyaml
