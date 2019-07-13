@@ -23,6 +23,7 @@ requirements:
     - pytorch::torchvision
     - overrides
     - flask
+    - pyyaml
 
 test:
   source_files:
