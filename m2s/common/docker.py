@@ -77,61 +77,77 @@ class Docker(object):
         Arguments:
             output_path (str): directory for the output Dockerfile
         """
-        modules_str = ""
-        for m in self.modules:
-            modules_str += f'COPY {m} {m}\n'
+        env_var_str = f'ENV WS=/home/m2s_user/{self.project_name}'
+        service_account_str = 'RUN adduser --disabled-password --gecos "" m2s_user'
+        ws_declaration_str = """RUN mkdir -p $WS
+WORKDIR $WS"""
+        
+        conda_env_str = f"""RUN mkdir envs
+COPY {self.conda_env_file} envs/environment.yaml
+RUN conda env create -f envs/environment.yaml"""
+        
+        startup_file_str = f"""COPY {self.service_startup_file} run_app.py
+COPY launch_dk.sh ./
+RUN chmod +x launch_dk.sh"""
+        
+        launch_str = """RUN chown -R m2s_user:m2s_user ./
+USER m2s_user
+EXPOSE 8000
+ENTRYPOINT ["./launch_dk.sh"]"""
+        
+        modules_str = ''
+        for module in self.modules:
+            module_name = list(module.keys())[0]
+            modules_str += f'RUN mkdir {module_name}\n'
+            to_copy_files = module[module_name]
+            for to_copy_file in to_copy_files:
+                modules_str += f'COPY {to_copy_file} {module_name}/\n'
+            modules_str += '\n'
 
-        data_str = ""
-        for d in self.data:
-            data_str += f'COPY {d} {d}\n'
+        if len(self.data) > 0:
+            data_str = "RUN mkdir data\n"
+            for d in self.data:
+                data_str += f'COPY {d} data/\n'
+        else:
+            data_str = ""
 
-        pretrained_str = ""
-        for p in self.pretrained:
-            pretrained_str += f'COPY {p} {p}\n'
+        if len(self.pretrained) > 0:
+            pretrained_str = "RUN mkdir pretrained\n"
+            for d in self.pretrained:
+                pretrained_str += f'COPY {d} pretrained/\n'
+        else:
+            pretrained_str = ""
 
         dockerfile_str = f"""FROM continuumio/miniconda3:latest
 
 # 1. set build-time environment variables
-ENV WS=/home/m2s_user/{self.project_name}
+{env_var_str}
 
 # 2. create service account
-RUN adduser --disabled-password --gecos "" m2s_user
+{service_account_str}
 
 # 3. declare workspace
-RUN mkdir -p $WS
-WORKDIR $WS
+{ws_declaration_str}
 
 # 4. create conda environment
-RUN mkdir envs
-COPY {self.conda_env_file} envs/environment.yaml
-RUN conda env create -f envs/environment.yaml
+{conda_env_str}
 
 # 5.1 install application modules
 {modules_str}
-
 # 5.2 install application data
-RUN mkdir data
 {data_str}
-
 # 5.3 install pretrained model
-RUN mkdir pretrained
 {pretrained_str}
-
 # 5.4 install startup files
-COPY {self.service_startup_file} ./
-COPY launch_dk.sh ./
-RUN chmod +x launch_dk.sh
+{startup_file_str}
 
 # 6. launch application
-RUN chown -R m2s_user:m2s_user ./
-USER m2s_user
-EXPOSE 8000
-ENTRYPOINT ["./launch_dk.sh"]
+{launch_str}
 """
 
         launch_file_str = f"""#!/bin/bash
 source activate {self.conda_env_name}
-exec gunicorn -b :8000 --timeout 600 --access-logfile access.log --error-logfile error.log {self.service_startup_file[:-3]}:{self.service_app_name}
+exec gunicorn -b :8000 --timeout 600 --access-logfile access.log --error-logfile error.log run_app:{self.service_app_name}
 """     
         dockerfile_path = os.path.join(output_path, 'Dockerfile')
         launch_file_path = os.path.join(output_path, 'launch_dk.sh')
