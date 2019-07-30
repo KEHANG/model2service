@@ -97,11 +97,14 @@ ENTRYPOINT ["./launch_dk.sh"]"""
         
         modules_str = ''
         for module in self.modules:
-            module_name = list(module.keys())[0]
-            modules_str += f'RUN mkdir {module_name}\n'
-            to_copy_files = module[module_name]
-            for to_copy_file in to_copy_files:
-                modules_str += f'COPY {to_copy_file} {module_name}/\n'
+            if isinstance(module, dict):
+                module_name = list(module.keys())[0]
+                modules_str += f'RUN mkdir {module_name}\n'
+                to_copy_files = module[module_name]
+                for to_copy_file in to_copy_files:
+                    modules_str += f'COPY {to_copy_file} {module_name}/\n'
+            elif isinstance(module, str):
+                modules_str += f'COPY {module} ./\n'
             modules_str += '\n'
 
         if len(self.data) > 0:

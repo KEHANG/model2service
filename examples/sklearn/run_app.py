@@ -4,7 +4,7 @@ from m2s.predictors.sklearn_predictor import SklearnLinearPredictor
 
 from model import MyLinearModel
 
-model_path = 'my_model.pkl'
+model_path = 'pretrained/my_model.pkl'
 predictor = SklearnLinearPredictor.load(MyLinearModel, model_path)
 
 # create service app
