@@ -10,7 +10,8 @@ class HelpCommand(BaseCommand):
         self.show_in_help = True
         self.description = "Show help for commands."
 
-    def get_all_commands(self):
+    @classmethod
+    def get_all_commands(cls):
         return BaseCommand.command_dict
 
     def execute(self, argv):
