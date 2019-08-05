@@ -1,4 +1,3 @@
-import os
 from setuptools import find_packages, setup
 
 exec(open('m2s/version.py').read())

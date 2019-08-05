@@ -20,7 +20,7 @@ class HelpCommand(BaseCommand):
         help_text += "%s <command> [options]\n" % m2s_command.name
         help_text += "\n"
         help_text += "Commands:\n"
-        for command_name, command in self.get_all_commands().items():
+        for _, command in self.get_all_commands().items():
             if not command.show_in_help or not command.description:
                 continue
             help_text += "  %-15s\t\t%s\n" % (command.name, command.description)
