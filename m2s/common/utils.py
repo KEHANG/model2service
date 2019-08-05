@@ -32,6 +32,6 @@ def sanitize(x):
     elif hasattr(x, 'to_json'):
         return x.to_json()
     else:
-        raise ValueError("Cannot sanitize {0} of {1}.".format(x, type(x)) + 
-                         "If this is your own custom class, add a `to_json(self)` method " + 
+        raise ValueError("Cannot sanitize {0} of {1}.".format(x, type(x)) +
+                         "If this is your own custom class, add a `to_json(self)` method " +
                          "that returns a JSON-like object.")

@@ -22,7 +22,7 @@ class DockerCommand(BaseCommand):
             print("ERROR: Please specify a yaml file path.\n")
             self.help()
             return False
-        
+  
         yaml_path = argv[0]
         docker = Docker.from_yaml(yaml_path)
 

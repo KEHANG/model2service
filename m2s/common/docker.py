@@ -94,7 +94,7 @@ RUN chmod +x launch_dk.sh"""
 USER m2s_user
 EXPOSE 8000
 ENTRYPOINT ["./launch_dk.sh"]"""
-        
+
         modules_str = ''
         for module in self.modules:
             if isinstance(module, dict):
@@ -151,7 +151,7 @@ ENTRYPOINT ["./launch_dk.sh"]"""
         launch_file_str = f"""#!/bin/bash
 source activate {self.conda_env_name}
 exec gunicorn -b :8000 --timeout 600 --access-logfile access.log --error-logfile error.log run_app:{self.service_app_name}
-"""     
+"""
         dockerfile_path = os.path.join(output_path, 'Dockerfile')
         launch_file_path = os.path.join(output_path, 'launch_dk.sh')
         with open(dockerfile_path, 'w') as dockerfile:
