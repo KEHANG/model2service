@@ -1,0 +1,14 @@
+project_name: test-project
+conda_env_name: test
+conda_env_file: environment.yaml
+
+modules:
+  - model.py
+
+data: []
+
+pretrained:
+  - pretrained
+
+service_startup_file: run_app.py
+service_app_name: service_app
