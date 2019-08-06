@@ -145,13 +145,11 @@ ENTRYPOINT ["./launch_dk.sh"]"""
 {startup_file_str}
 
 # 6. launch application
-{launch_str}
-"""
+{launch_str}"""
 
         launch_file_str = f"""#!/bin/bash
 source activate {self.conda_env_name}
-exec gunicorn -b :8000 --timeout 600 --access-logfile access.log --error-logfile error.log run_app:{self.service_app_name}
-"""
+exec gunicorn -b :8000 --timeout 600 --access-logfile access.log --error-logfile error.log run_app:{self.service_app_name}"""
         dockerfile_path = os.path.join(output_path, 'Dockerfile')
         launch_file_path = os.path.join(output_path, 'launch_dk.sh')
         with open(dockerfile_path, 'w') as dockerfile:
@@ -159,3 +157,5 @@ exec gunicorn -b :8000 --timeout 600 --access-logfile access.log --error-logfile
 
         with open(launch_file_path, 'w') as launch_file:
             launch_file.write(launch_file_str)
+
+        return dockerfile_str, launch_file_str
