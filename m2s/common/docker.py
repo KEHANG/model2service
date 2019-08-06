@@ -69,6 +69,52 @@ class Docker(object):
                    service_startup_file,
                    service_app_name)
 
+    def generate_modules_str(self):
+        """
+        This method generates a string for the `modules` section of dockerfile. 
+        So natually it will be called by method to_dockerfile()
+        """
+        modules_str = ''
+        for module in self.modules:
+            if isinstance(module, dict):
+                module_name = list(module.keys())[0]
+                modules_str += f'RUN mkdir {module_name}\n'
+                to_copy_files = module[module_name]
+                for to_copy_file in to_copy_files:
+                    modules_str += f'COPY {to_copy_file} {module_name}/\n'
+            elif isinstance(module, str):
+                modules_str += f'COPY {module} ./\n'
+
+        return modules_str
+
+    def generate_data_str(self):
+        """
+        This method generates a string for the `data` section of dockerfile. 
+        So natually it will be called by method to_dockerfile()
+        """
+        if len(self.data) > 0:
+            data_str = "RUN mkdir data\n"
+            for d in self.data:
+                data_str += f'COPY {d} data/\n'
+        else:
+            data_str = ""
+
+        return data_str
+
+    def generate_pretrained_str(self):
+        """
+        This method generates a string for the `pretrained` section of dockerfile. 
+        So natually it will be called by method to_dockerfile()
+        """
+        if len(self.pretrained) > 0:
+            pretrained_str = "RUN mkdir pretrained\n"
+            for d in self.pretrained:
+                pretrained_str += f'COPY {d} pretrained/\n'
+        else:
+            pretrained_str = ""
+
+        return pretrained_str
+
     def to_dockerfile(self, output_path):
         """
         This method generates Dockerfile based on the attributes
@@ -95,31 +141,9 @@ USER m2s_user
 EXPOSE 8000
 ENTRYPOINT ["./launch_dk.sh"]"""
 
-        modules_str = ''
-        for module in self.modules:
-            if isinstance(module, dict):
-                module_name = list(module.keys())[0]
-                modules_str += f'RUN mkdir {module_name}\n'
-                to_copy_files = module[module_name]
-                for to_copy_file in to_copy_files:
-                    modules_str += f'COPY {to_copy_file} {module_name}/\n'
-            elif isinstance(module, str):
-                modules_str += f'COPY {module} ./\n'
-            modules_str += '\n'
-
-        if len(self.data) > 0:
-            data_str = "RUN mkdir data\n"
-            for d in self.data:
-                data_str += f'COPY {d} data/\n'
-        else:
-            data_str = ""
-
-        if len(self.pretrained) > 0:
-            pretrained_str = "RUN mkdir pretrained\n"
-            for d in self.pretrained:
-                pretrained_str += f'COPY {d} pretrained/\n'
-        else:
-            pretrained_str = ""
+        modules_str = self.generate_modules_str()
+        data_str = self.generate_data_str()
+        pretrained_str = self.generate_pretrained_str()        
 
         dockerfile_str = f"""FROM continuumio/miniconda3:latest
 

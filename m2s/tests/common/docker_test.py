@@ -7,24 +7,51 @@ class TestDocker(unittest.TestCase):
 
     def setUp(self):
         test_base = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
-        self.yaml_path = os.path.join(test_base, 'common', 'data', 'm2s.yaml')
-        self.docker = Docker.from_yaml(self.yaml_path)
+        self.yaml_path1 = os.path.join(test_base, 'common', 'data', 'm2s_1.yaml')
+        self.docker1 = Docker.from_yaml(self.yaml_path1)
+
+        self.yaml_path2 = os.path.join(test_base, 'common', 'data', 'm2s_2.yaml')
+        self.docker2 = Docker.from_yaml(self.yaml_path2)
 
     def test_from_yaml(self):
         
-        self.assertTrue(self.docker.project_name == 'test-project')
-        self.assertTrue(self.docker.conda_env_name == 'test')
-        self.assertTrue(self.docker.conda_env_file == 'environment.yaml')
-        self.assertTrue(self.docker.modules == ['model.py'])
-        self.assertTrue(self.docker.data == [])
-        self.assertTrue(self.docker.pretrained == ['pretrained'])
-        self.assertTrue(self.docker.service_startup_file == 'run_app.py')
-        self.assertTrue(self.docker.service_app_name == 'service_app')
+        self.assertTrue(self.docker1.project_name == 'test-project')
+        self.assertTrue(self.docker1.conda_env_name == 'test')
+        self.assertTrue(self.docker1.conda_env_file == 'environment.yaml')
+        self.assertTrue(self.docker1.modules == ['model.py'])
+        self.assertTrue(self.docker1.data == [])
+        self.assertTrue(self.docker1.pretrained == ['pretrained'])
+        self.assertTrue(self.docker1.service_startup_file == 'run_app.py')
+        self.assertTrue(self.docker1.service_app_name == 'service_app')
+
+    def test_generate_modules_str(self):
+
+        modules_str = self.docker2.generate_modules_str()
+        expected_modules_str = """RUN mkdir module1
+COPY module1 module1/
+RUN mkdir module2
+COPY module2 module2/
+"""
+        self.assertTrue(modules_str == expected_modules_str)
+
+    def test_generate_data_str(self):
+
+        data_str = self.docker2.generate_data_str()
+        expected_data_str = """RUN mkdir data
+COPY data/meta_data.csv data/
+"""
+        self.assertTrue(data_str == expected_data_str)
+
+    def test_generate_pretrained_str(self):
+
+        pretrained_str = self.docker2.generate_pretrained_str()
+        expected_pretrained_str = ""
+        self.assertTrue(pretrained_str == expected_pretrained_str)
 
     def test_to_dockerfile(self):
 
-        output_path = os.path.dirname(self.yaml_path)
-        dockerfile_str, launch_file_str = self.docker.to_dockerfile(output_path)
+        output_path = os.path.dirname(self.yaml_path1)
+        dockerfile_str, launch_file_str = self.docker1.to_dockerfile(output_path)
 
         expected_dockerfile_str = """FROM continuumio/miniconda3:latest
 
@@ -45,7 +72,6 @@ RUN conda env create -f envs/environment.yaml
 
 # 5.1 install application modules
 COPY model.py ./
-
 
 # 5.2 install application data
 
