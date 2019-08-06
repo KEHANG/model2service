@@ -12,7 +12,8 @@ class SklearnLinearPredictor(Predictor):
         Expects JSON that looks like
         ``{"x": list[float]}``.
         """
-        assert "x" in input_json
+        if  "x" not in input_json:
+            raise AssertionError("Expect x to be in the input, but not there.")
         instance = input_json["x"]
         return instance
 
