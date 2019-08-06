@@ -89,7 +89,7 @@ RUN conda env create -f envs/environment.yaml"""
         startup_file_str = f"""COPY {self.service_startup_file} run_app.py
 COPY launch_dk.sh ./
 RUN chmod +x launch_dk.sh"""
-        
+  
         launch_str = """RUN chown -R m2s_user:m2s_user ./
 USER m2s_user
 EXPOSE 8000
